@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cem Goken Game Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout (mobile first): centred logo + tagline → sticky section menu → "Yakında" games with a strip of
+   8 media frames (4×2 on phones, 8×1 on desktop) → workshop grid (2 per row on phones, 4 on desktop).
+   Single deliberate night-studio look in the fox logo's colours. */
+:root {
+  --night: #0f1424;
+  --panel: #171e35;
+  --panel-2: #1f2844;
+  --line: #2b3557;
+  --amber: #f2a93b;
+  --honey: #ffd27a;
+  --ink: #eef0f7;
+  --en: #a9b3d4;
+  --muted: #8a93b0;
+  --test: #5fd4a0;
+  --dev: #8fa7ff;
+  --warm: #0b1020;
+  --warm-line: #c9852f;
+  --stage-a: #fff4dc;
+  --stage-b: #dfeeff;
+  --display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--night); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; text-wrap: balance; margin: 0; }
+a { color: var(--honey); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--honey); outline-offset: 3px; border-radius: 10px; }
+.tr { color: var(--ink); }
+.en { color: var(--en); }
+
+/* masthead */
+.mast { text-align: center; padding-block: 32px 24px; background: radial-gradient(90% 120% at 50% 0%, #1d2850 0%, var(--night) 70%); }
+.mast img { width: min(440px, 88%); height: auto; display: block; margin: 0 auto 18px; }
+.tagline { max-width: 40ch; margin: 0 auto; font-size: clamp(16px, 2.4vw, 19px); font-weight: 500; }
+.tagline p { margin: 0; }
+.tagline p + p { margin-top: 4px; }
+
+/* section menu */
+.menu { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(15, 20, 36, .94); backdrop-filter: blur(8px); border-block: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21; background: var(--night); }
+.menu .wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding-block: 8px; }
+.menu a { text-decoration: none; text-align: center; border-radius: 12px; padding: 6px 4px; font-size: 14px; line-height: 1.25; font-weight: 600; }
+.menu a:hover { background: var(--panel); }
+.menu a span { display: block; font-weight: 500; }
+
+.section { padding-block: 34px 10px; scroll-margin-top: 70px; }
+.feature, .card { scroll-margin-top: 80px; transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.feature:hover, .card:hover { background: var(--warm); border-color: var(--warm-line); }
+.feature.here, .card.here { background: var(--warm); border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber), 0 10px 30px rgba(242, 169, 59, .18); }
+.shelf a.here img { box-shadow: 0 0 0 3px var(--amber), 0 4px 12px rgba(0,0,0,.4); }
+@media (prefers-reduced-motion: reduce) { .feature, .card { transition: none; } }
+
+/* icon shelf: every game at a glance */
+.shelf { border-bottom: 1px solid var(--line); background: linear-gradient(180deg, var(--panel) 0%, var(--night) 100%); }
+.shelf ul { list-style: none; margin: 0 auto; padding-block: 16px; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.shelf li { flex: none; scroll-snap-align: start; }
+.shelf a { display: grid; justify-items: center; gap: 6px; width: 84px; text-decoration: none; color: var(--ink); font-size: 12px; line-height: 1.2; text-align: center; font-weight: 600; }
+.shelf img { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.4); transition: transform .15s ease; }
+.shelf a:hover img, .shelf a:focus-visible img { transform: translateY(-3px) scale(1.04); }
+.shelf .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dev); }
+.shelf .dot.test { background: var(--test); }
+@media (min-width: 980px) { .shelf ul { justify-content: center; gap: 22px; } .shelf a { width: 96px; font-size: 13px; } .shelf img { width: 76px; height: 76px; } }
+@media (prefers-reduced-motion: reduce) { .shelf img { transition: none; } }
+.sec-title { margin-bottom: 18px; }
+.sec-title h2 { font-size: clamp(24px, 4vw, 32px); }
+.sec-title h2 .en { font-weight: 600; }
+.sec-title p { margin: 6px 0 0; font-size: 15px; }
+
+/* chips */
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.test { color: var(--test); }
+.chip.dev { color: var(--dev); }
+
+/* empty state */
+.empty { border: 1px dashed var(--line); border-radius: 18px; padding: 22px; text-align: center; font-size: 15px; }
+.empty p { margin: 0; }
+
+/* featured game */
+.feature { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 18px; margin-bottom: 24px; display: grid; gap: 16px; }
+.head { display: flex; gap: 14px; align-items: center; min-width: 0; }
+.head > img { width: 76px; height: 76px; border-radius: 18px; flex: none; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.names { min-width: 0; }
+.names h3 { font-size: clamp(22px, 3.2vw, 30px); }
+.names .en-name { font-family: var(--display); font-weight: 600; font-size: clamp(17px, 2.4vw, 21px); color: var(--en); line-height: 1.15; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.desc { display: grid; gap: 4px; max-width: 70ch; }
+.desc p { margin: 0; font-size: 16px; }
+
+.strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: auto; }
+.mini .frame { border-radius: 10px; }
+.mini .frame.wide { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.mini .frame .tag { font-size: 10px; }
+.mini .frame .play::before { width: 34px; height: 34px; }
+.mini .frame .play::after { border-left-width: 11px; border-top-width: 7px; border-bottom-width: 7px; margin-left: 4px; }
+.frame { position: relative; aspect-ratio: 9 / 16; max-width: 100%; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid var(--line); padding: 0; cursor: zoom-in; display: block; width: 100%; }
+.frame img, .frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frame .tag { position: absolute; left: 6px; top: 6px; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--night); background: var(--honey); border-radius: 6px; padding: 1px 6px; }
+.frame .play { position: absolute; inset: 0; display: grid; place-items: center; }
+.frame .play::before { content: ""; width: 46px; height: 46px; border-radius: 50%; background: rgba(15,20,36,.72); border: 2px solid var(--honey); }
+.frame .play::after { content: ""; position: absolute; border-left: 15px solid var(--honey); border-top: 9px solid transparent; border-bottom: 9px solid transparent; margin-left: 5px; }
+.frame.soon { cursor: default; display: grid; place-items: center; text-align: center; background: var(--panel-2); color: var(--muted); font-size: 13px; padding: 8px; line-height: 1.3; }
+
+.stores { display: flex; gap: 10px; flex-wrap: wrap; margin-top: -4px; }
+.badge { display: inline-flex; align-items: center; gap: 10px; background: #000; color: #fff; border: 1px solid #5a6488; border-radius: 12px; padding: 7px 14px 7px 12px; text-decoration: none; min-width: 168px; }
+.badge svg { width: 26px; height: 26px; flex: none; }
+.badge small { display: block; font-size: 11px; line-height: 1.1; color: #c9cfe6; }
+.badge b { display: block; font-family: var(--display); font-size: 19px; line-height: 1; font-weight: 600; }
+.badge.off { opacity: .55; }
+a.badge:hover { border-color: var(--honey); }
+
+/* workshop grid */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 40px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card .art { aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; background: linear-gradient(160deg, var(--stage-a), var(--stage-b)); padding: 10px; }
+.card .art img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(30, 30, 60, .25)); }
+.card .art.cover { padding: 0; }
+.card .art.cover img { width: 100%; height: 100%; object-fit: cover; filter: none; }
+.card .body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card .head { align-items: flex-start; gap: 10px; }
+.card .head > img { width: 48px; height: 48px; border-radius: 12px; }
+.card .names h3 { font-size: 19px; }
+.card .names .en-name { font-size: 16px; }
+.card .desc p { font-size: 14px; }
+.card .more-unused { margin-top: auto; background: none; border: 0; padding: 0; color: var(--honey); font: 600 14px var(--body); text-align: left; cursor: pointer; }
+
+footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var(--muted); font-size: 14px; text-align: center; }
+
+/* viewer */
+.viewer { position: fixed; inset: 0; z-index: 50; background: rgba(6, 8, 16, .92); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.viewer img, .viewer video { max-width: 100%; max-height: 86vh; border-radius: 16px; background: #000; }
+.viewer .close { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); right: max(14px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 22px; cursor: pointer; }
+
+@media (min-width: 700px) {
+  .feature { padding: 22px; }
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
+@media (min-width: 980px) {
+  .strip { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <img src="studio_full.png" alt="Cem Goken Game Studio" width="1472" height="448">
+    <div class="tagline">
+      <p class="tr">Renkli dünyalar, akıllı bulmacalar ve bol kahkaha: cebindeki küçük oyun parkı.</p>
+      <p class="en">Colourful worlds, clever puzzles and plenty of laughs: a little playground in your pocket.</p>
+    </div>
+  </div>
+</header>
+
+<nav class="menu" aria-label="Bölümler">
+  <div class="wrap">
+    <a href="#magazada" class="tr">Mağazada<span class="en">In stores</span></a>
+    <a href="#vitrin" class="tr">Vitrin<span class="en">Showcase</span></a>
+    <a href="#atolye" class="tr">Atölyede<span class="en">In the workshop</span></a>
+  </div>
+</nav>
+
+<div class="shelf" aria-label="Tüm oyunlar · All games">
+  <ul class="wrap">
+      <li><a href="#glowtide"><img src="glowtide_icon.jpg" alt="" width="256" height="256">Glowtide<span class="dot test"></span></a></li>
+      <li><a href="#letters-numbers"><img src="letters-numbers_icon.jpg" alt="" width="256" height="256">Letters &amp; Numbers<span class="dot test"></span></a></li>
+      <li><a href="#beedrop"><img src="beedrop_icon.jpg" alt="" width="256" height="256">BeeDrop<span class="dot "></span></a></li>
+      <li><a href="#chain-reactor"><img src="chain-reactor_icon.jpg" alt="" width="256" height="256">Chain Reactor<span class="dot "></span></a></li>
+      <li><a href="#magnevo"><img src="magnevo_icon.jpg" alt="" width="256" height="256">Magnevo<span class="dot "></span></a></li>
+      <li><a href="#top-of-the-class"><img src="top-of-the-class_icon.jpg" alt="" width="256" height="256">Sınıfın En İyisi<span class="dot "></span></a></li>
+      <li><a href="#where-on-earth"><img src="where-on-earth_icon.jpg" alt="" width="256" height="256">Dünyanın Neresinde?<span class="dot "></span></a></li>
+      <li><a href="#alti-yuz-yil"><img src="6yuzyil_icon.jpg" alt="" width="256" height="256">Altı Yüz Yıl<span class="dot "></span></a></li>
+  </ul>
+</div>
+
+<main>
+  <section class="section" id="magazada">
+    <div class="wrap">
+      <div class="sec-title"><h2><span class="tr">Mağazada</span> · <span class="en">In stores</span></h2></div>
+      <div class="empty">
+        <p class="tr">İlk oyunlarımız App Store ve Google Play'e çıkmak üzere. Çıktıkları gün burada olacaklar.</p>
+        <p class="en">Our first games are about to land on the App Store and Google Play. They'll appear here on launch day.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="vitrin">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2><span class="tr">Vitrin</span> · <span class="en">Showcase</span></h2>
+        <p><span class="tr">Mağazalara çıkmak üzere olan oyunlar.</span> <span class="en">Games about to reach the stores.</span></p>
+      </div>
+
+      <article class="feature" id="glowtide">
+        <div class="head">
+          <img src="glowtide_icon.jpg" alt="" width="256" height="256">
+          <div class="names">
+            <h3>Glowtide</h3>
+            <div class="en-name">Glowtide</div>
+            <div class="meta"><span class="chip test">Test · Testing</span><span>Bulmaca · Puzzle · 4+</span></div>
+          </div>
+        </div>
+        <div class="stores">
+          <span class="badge off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>Yakında · Coming soon</small><b>App Store</b></span></span>
+          <a class="badge" href="https://play.google.com/apps/testing/com.cemgoken.glowtide" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>Test sürümü · Test build</small><b>Google Play</b></span></a>
+        </div>
+        <div class="desc">
+          <p class="tr">Deniz fenerinin ışığını çevir, tekneleri limana ulaştır. Tekneler yalnızca ışıkta ilerler; ışığı doğru anda doğru yöne tut, kayalardan ve sisten kaçır.</p>
+          <p class="en">Turn the lighthouse beam and bring the boats home. They only move while they're in the light, so aim it at the right moment and steer them clear of rocks and fog.</p>
+        </div>
+        <div class="strip">
+          <button class="frame" data-video="glowtide_trailer.mp4" aria-label="Glowtide tanıtım videosu"><img src="glowtide_trailer_poster.jpg" alt="" loading="lazy"><span class="play"></span><span class="tag">Tanıtım · Trailer</span></button>
+          <div class="frame soon"><span><span class="tr">Açılış videosu yakında</span><br><span class="en">Opening video soon</span></span></div>
+          <button class="frame" data-img="glowtide_shot1.jpg"><img src="glowtide_shot1.jpg" alt="Glowtide ekran 1" loading="lazy"></button>
+          <button class="frame" data-img="glowtide_shot2.jpg"><img src="glowtide_shot2.jpg" alt="Glowtide ekran 2" loading="lazy"></button>
+          <button class="frame" data-img="glowtide_shot3.jpg"><img src="glowtide_shot3.jpg" alt="Glowtide ekran 3" loading="lazy"></button>
+          <button class="frame" data-img="glowtide_shot4.jpg"><img src="glowtide_shot4.jpg" alt="Glowtide ekran 4" loading="lazy"></button>
+          <button class="frame" data-img="glowtide_shot5.jpg"><img src="glowtide_shot5.jpg" alt="Glowtide ekran 5" loading="lazy"></button>
+          <button class="frame" data-img="glowtide_shot6.jpg"><img src="glowtide_shot6.jpg" alt="Glowtide ekran 6" loading="lazy"></button>
+        </div>
+      </article>
+
+      <article class="feature" id="letters-numbers">
+        <div class="head">
+          <img src="letters-numbers_icon.jpg" alt="" width="256" height="256">
+          <div class="names">
+            <h3>Letters &amp; Numbers: Kelime Şov</h3>
+            <div class="en-name">Letters &amp; Numbers: Word Show</div>
+            <div class="meta"><span class="chip test">Test · Testing</span><span>Kelime · Word · 4+</span></div>
+          </div>
+        </div>
+        <div class="stores">
+          <span class="badge off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>Yakında · Coming soon</small><b>App Store</b></span></span>
+          <a class="badge" href="https://play.google.com/apps/testing/com.cemgoken.lettersnumbers" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>Test sürümü · Test build</small><b>Google Play</b></span></a>
+        </div>
+        <div class="desc">
+          <p class="tr">Kelime ve işlem yarışması. Harflerden en uzun kelimeyi bul, sayılarla hedefe ulaş. Sunucu Profesör Hoot ile her gün yeni bir yarışma, Türkçe ya da İngilizce.</p>
+          <p class="en">A word and number game show. Find the longest word, hit the target number. A new show with host Professor Hoot every day, in English or Turkish.</p>
+        </div>
+        <div class="strip">
+          <button class="frame" data-video="letters-numbers_trailer.mp4" aria-label="Letters & Numbers tanıtım videosu"><img src="letters-numbers_trailer_poster.jpg" alt="" loading="lazy"><span class="play"></span><span class="tag">Tanıtım · Trailer</span></button>
+          <button class="frame" data-video="letters-numbers_opening.mp4" aria-label="Letters & Numbers açılış videosu"><img src="letters-numbers_opening_poster.jpg" alt="" loading="lazy"><span class="play"></span><span class="tag">Açılış · Opening</span></button>
+          <button class="frame" data-img="letters-numbers_shot1.jpg"><img src="letters-numbers_shot1.jpg" alt="Letters & Numbers ekran 1" loading="lazy"></button>
+          <button class="frame" data-img="letters-numbers_shot2.jpg"><img src="letters-numbers_shot2.jpg" alt="Letters & Numbers ekran 2" loading="lazy"></button>
+          <button class="frame" data-img="letters-numbers_shot3.jpg"><img src="letters-numbers_shot3.jpg" alt="Letters & Numbers ekran 3" loading="lazy"></button>
+          <button class="frame" data-img="letters-numbers_shot4.jpg"><img src="letters-numbers_shot4.jpg" alt="Letters & Numbers ekran 4" loading="lazy"></button>
+          <button class="frame" data-img="letters-numbers_shot5.jpg"><img src="letters-numbers_shot5.jpg" alt="Letters & Numbers ekran 5" loading="lazy"></button>
+          <button class="frame" data-img="letters-numbers_shot6.jpg"><img src="letters-numbers_shot6.jpg" alt="Letters & Numbers ekran 6" loading="lazy"></button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="atolye">
+    <div class="wrap">
+      <div class="sec-title"><h2><span class="tr">Atölyede</span> · <span class="en">In the workshop</span></h2></div>
+      <div class="grid">
+
+        <article class="card" id="beedrop">
+          <div class="art"><img src="beedrop_art.png" alt="Pilot arı Ace" loading="lazy"></div>
+          <div class="body">
+            <div class="head"><img src="beedrop_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>BeeDrop</h3><div class="en-name">BeeDrop</div></div></div>
+            <div class="desc">
+              <p class="tr">Petekte arı bulmacası: her renge, satıra ve çapraza tek arı, arılar birbirine değmez. Pilot arı Ace ile 7 bahçe.</p>
+              <p class="en">A honeycomb bee puzzle: one bee per colour, row and diagonal, and no two bees touch. Seven gardens with Ace the pilot bee.</p>
+            </div>
+            <div class="mini">
+              <button class="frame" data-video="beedrop_opening.mp4" aria-label="BeeDrop açılış videosu"><img src="beedrop_opening_poster.jpg" alt="" loading="lazy"><span class="play"></span><span class="tag">Açılış · Opening</span></button>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="chain-reactor">
+          <div class="art"><img src="chain-reactor_logo.png" alt="Chain Reactor logosu" loading="lazy"></div>
+          <div class="body">
+            <div class="head"><img src="chain-reactor_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>Chain Reactor</h3><div class="en-name">Chain Reactor</div></div></div>
+            <div class="desc">
+              <p class="tr">Parçaları yerleştir, düğmeye bas: bombalar, roketler, yaylar ve dominolarla zincirleme tepkiyi hedefe ulaştır.</p>
+              <p class="en">Place the parts and press go: bombs, rockets, springs and dominoes carry the chain reaction to the goal.</p>
+            </div>
+            <div class="mini">
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="magnevo">
+          <div class="art"><img src="magnevo_icon.jpg" alt="" loading="lazy" style="border-radius:22px;height:100%"></div>
+          <div class="body">
+            <div class="head"><img src="magnevo_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>Magnevo</h3><div class="en-name">Magnevo</div></div></div>
+            <div class="desc">
+              <p class="tr">Artı ve eksi kutuplarla oynanan manyetik bulmaca-strateji oyunu. Birimlerin evrimleşir; 1000 bölüm seni bekliyor.</p>
+              <p class="en">A magnetic puzzle-strategy game played with plus and minus poles. Your units evolve, and 1,000 levels are waiting.</p>
+            </div>
+            <div class="mini">
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="top-of-the-class">
+          <div class="art"><img src="top-of-the-class_art.png" alt="Top of the Class logosu" loading="lazy"></div>
+          <div class="body">
+            <div class="head"><img src="top-of-the-class_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>Sınıfın En İyisi: Gökkuşağı Büyü Okulu</h3><div class="en-name">Top of the Class: Rainbow School of Magic</div></div></div>
+            <div class="desc">
+              <p class="tr">Büyü okulunda öğrenci hayatı: dersler, büyüler, arkadaşlar ve sınıfın birincisi olma yarışı.</p>
+              <p class="en">Student life at a school of magic: classes, spells, friends and the race to be top of the class.</p>
+            </div>
+            <div class="mini">
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="where-on-earth">
+          <div class="art cover"><img src="where-on-earth_art.jpg" alt="Eski dünya haritası" loading="lazy"></div>
+          <div class="body">
+            <div class="head"><img src="where-on-earth_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>Dünyanın Neresinde?</h3><div class="en-name">Where on Earth?</div></div></div>
+            <div class="desc">
+              <p class="tr">Haritadaki yerinden ve komşularından ülkeyi tahmin et, kıtasını bil, bonus puanları topla.</p>
+              <p class="en">Guess the country from its place on the map and its neighbours, name its continent and collect bonus points.</p>
+            </div>
+            <div class="mini">
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="alti-yuz-yil">
+          <div class="art"><img src="6yuzyil_art.png" alt="Altı Yüz Yıl başlık görseli" loading="lazy"></div>
+          <div class="body">
+            <div class="head"><img src="6yuzyil_icon.jpg" alt="" width="256" height="256"><div class="names"><h3>Altı Yüz Yıl</h3><div class="en-name">Six Hundred Years</div></div></div>
+            <div class="desc">
+              <p class="tr">1299'dan 1922'ye 36 padişahla altı yüz yıl: kararlar ver, olayları mini oyunlarla yaşa, padişah kartlarını topla.</p>
+              <p class="en">Six hundred years with 36 sultans, from 1299 to 1922: make decisions, play the events and collect the sultan cards.</p>
+            </div>
+            <div class="mini">
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon"><span><span class="tr">Eklenecek</span><br><span class="en">Coming soon</span></span></div>
+              <div class="frame soon wide"><span><span class="tr">Yatay görüntü eklenecek</span><br><span class="en">Landscape shot coming soon</span></span></div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Cem Goken Game Studio · <a href="../privacy.html">Gizlilik · Privacy</a></div>
+</footer>
+
+<div class="viewer" id="viewer" hidden>
+  <button class="close" id="viewer-close" aria-label="Kapat">×</button>
+  <div id="viewer-body"></div>
+</div>
+
+<script>
+(function () {
+  var viewer = document.getElementById('viewer');
+  var body = document.getElementById('viewer-body');
+  function close() { body.innerHTML = ''; viewer.hidden = true; }
+  function open(el) {
+    body.innerHTML = '';
+    if (el.dataset.video) {
+      var v = document.createElement('video');
+      v.src = el.dataset.video; v.controls = true; v.autoplay = true; v.playsInline = true;
+      body.appendChild(v);
+    } else if (el.dataset.img) {
+      var i = document.createElement('img');
+      i.src = el.dataset.img; i.alt = '';
+      body.appendChild(i);
+    }
+    viewer.hidden = false;
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-video],[data-img]');
+    if (t) { open(t); return; }
+    if (e.target === viewer || e.target.id === 'viewer-close') close();
+  });
+  // mark the game you jumped to (and its icon in the shelf)
+  function mark(id) {
+    document.querySelectorAll('.here').forEach(function (n) { n.classList.remove('here'); });
+    var t = id && document.getElementById(id);
+    if (!t) return;
+    t.classList.add('here');
+    var a = document.querySelector('.shelf a[href="#' + id + '"]');
+    if (a) a.classList.add('here');
+  }
+  // the mark fades after 3 s; if the pointer is on the card, it stays until the pointer leaves
+  var timer = null;
+  function clearSoon(el) {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (el.matches(':hover')) {
+        el.addEventListener('mouseleave', function () { mark(null); }, { once: true });
+      } else mark(null);
+    }, 3000);
+  }
+  document.querySelectorAll('.shelf a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var id = a.getAttribute('href').slice(1);
+      mark(id);
+      var t = document.getElementById(id);
+      if (t) clearSoon(t);
+    });
+  });
+  if (location.hash) { mark(location.hash.slice(1)); var h = document.getElementById(location.hash.slice(1)); if (h) clearSoon(h); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !viewer.hidden) close(); });
+})();
+</script>
+
+</body>
+</html>
