@@ -1,0 +1,4 @@
+<!doctype html><meta charset=utf-8><title>p</title><script>
+var n=new URLSearchParams(location.search).get('n')||'';
+var im=new Image();im.onload=function(){var c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext('2d').drawImage(im,0,0);parent.postMessage({name:n,url:c.toDataURL('image/jpeg',0.95)},'https://gemini.google.com')};im.src=n+'.jpg';
+</script>
