@@ -59,6 +59,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .menu a { text-decoration: none; text-align: center; border-radius: 12px; padding: 6px 4px; font-size: 14px; line-height: 1.25; font-weight: 600; }
 .menu a:hover { background: var(--panel); }
 .menu a span { display: block; font-weight: 500; }
+.menu a.on, .menu a.on:hover { background: var(--amber); color: var(--night); }
+.menu a.on span { color: var(--night); }
 
 .section { padding-block: 34px 10px; scroll-margin-top: 70px; }
 .feature, .card { scroll-margin-top: 80px; transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease; }
@@ -177,7 +179,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   .card .head > img { width: 61px; height: 61px; border-radius: 15px; }
   .card .desc p { font-size: 11.9px; }
   /* icon shelf as a stacked card slider */
-  .shelf ul.wrap { position: relative; gap: 0; padding: 22px calc(50% - 48px) 16px; scroll-snap-type: x mandatory; scrollbar-width: none; max-width: none; }
+  .shelf ul.wrap { position: relative; cursor: grab; user-select: none; gap: 0; padding: 22px calc(50% - 48px) 16px; scroll-snap-type: x mandatory; scrollbar-width: none; max-width: none; }
   .shelf ul.wrap::-webkit-scrollbar { display: none; }
   .shelf li { scroll-snap-align: center; margin-inline: -10px; transition: transform .18s ease-out, opacity .18s ease-out; will-change: transform; }
   .shelf a { width: 96px; font-size: 12px; }
@@ -485,9 +487,48 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   ul.querySelectorAll('a').forEach(function (a) {
     a.addEventListener('click', function () { if (phone.matches) a.parentNode.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); });
   });
+  // mouse: drag the slider left/right (touch already swipes natively)
+  var drag = null, moved = false;
+  ul.addEventListener('pointerdown', function (e) {
+    if (!phone.matches || e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = { x: e.clientX, left: ul.scrollLeft }; moved = false;
+    ul.style.scrollSnapType = 'none'; ul.style.cursor = 'grabbing';
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    var dx = e.clientX - drag.x;
+    if (Math.abs(dx) > 5) moved = true;
+    ul.scrollLeft = drag.left - dx;
+  });
+  window.addEventListener('pointerup', function () {
+    if (!drag) return;
+    drag = null; ul.style.cursor = '';
+    var c = ul.scrollLeft + ul.clientWidth / 2, best = null, bd = 1e9;
+    ul.querySelectorAll('li').forEach(function (li) { var d = Math.abs(li.offsetLeft + li.offsetWidth / 2 - c); if (d < bd) { bd = d; best = li; } });
+    if (best) ul.scrollTo({ left: best.offsetLeft + best.offsetWidth / 2 - ul.clientWidth / 2, behavior: 'smooth' });
+    setTimeout(function () { ul.style.scrollSnapType = ''; }, 400);
+  });
+  ul.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; } }, true);
+  ul.addEventListener('dragstart', function (e) { e.preventDefault(); });
   if (phone.matches) { var l1 = ul.querySelectorAll('li')[1]; if (l1) ul.scrollLeft = l1.offsetLeft + l1.offsetWidth / 2 - ul.clientWidth / 2; }
   shelf();
-  if (location.hash) { mark(location.hash.slice(1)); var h = document.getElementById(location.hash.slice(1)); if (h) clearSoon(h); }
+  // sticky menu: the section you are in turns orange (scrolling, menu taps and icon jumps alike)
+  var menu = document.querySelector('.menu'), links = document.querySelectorAll('.menu a'), spyRaf = 0;
+  function spy() {
+    spyRaf = 0;
+    var line = menu.getBoundingClientRect().bottom + 24, cur = null;
+    links.forEach(function (a) { var sec = document.querySelector(a.getAttribute('href')); if (sec && sec.getBoundingClientRect().top <= line) cur = a; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) cur = links[links.length - 1];
+    links.forEach(function (a) { a.classList.toggle('on', a === cur); });
+  }
+  window.addEventListener('scroll', function () { if (!spyRaf) spyRaf = requestAnimationFrame(spy); }, { passive: true });
+  window.addEventListener('resize', spy);
+  spy();
+  // always open at the top of the page (no jump to a section, no restored scroll)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo(0, 0);
+  window.addEventListener('load', function () { if (!location.hash) window.scrollTo(0, 0); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !viewer.hidden) close(); });
 })();
 </script>
