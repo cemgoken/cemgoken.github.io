@@ -1,0 +1,4 @@
+{
+  "about": "Cem Goken Game Studio ads switch. test = Google sample ads, real = live ads. TestFlight and App Review builds always show test ads.",
+  "where-on-earth": { "android": "test", "ios": "real" }
+}
