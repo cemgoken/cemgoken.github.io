@@ -166,10 +166,25 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   .chip::before { width: 3.5px; height: 3.5px; }
   .feature .names h3 { font-size: 22px; }
   .feature .names .en-name { font-size: 17px; }
-  .feature .head > img { width: 95px; height: 95px; border-radius: 22px; }
+  .feature .head > img { width: 105px; height: 105px; border-radius: 24px; }
+  .feature .meta { flex-direction: column; align-items: flex-start; gap: 5px; font-size: 10.5px; }
+  .feature .meta .chip { order: 2; font-size: 8.1px; gap: 4px; padding: 1px 6px; }
+  .feature .meta .chip::before { width: 4.4px; height: 4.4px; }
+  .feature .desc p { font-size: 12.8px; }
+  .strip { gap: 5px; }
   .card .names h3 { font-size: 13.75px; }
   .card .names .en-name { font-size: 10.6px; }
-  .card .head > img { width: 53px; height: 53px; border-radius: 13px; }
+  .card .head > img { width: 61px; height: 61px; border-radius: 15px; }
+  .card .desc p { font-size: 11.9px; }
+  /* icon shelf as a stacked card slider */
+  .shelf ul.wrap { position: relative; gap: 0; padding: 22px calc(50% - 48px) 16px; scroll-snap-type: x mandatory; scrollbar-width: none; max-width: none; }
+  .shelf ul.wrap::-webkit-scrollbar { display: none; }
+  .shelf li { scroll-snap-align: center; margin-inline: -10px; transition: transform .18s ease-out, opacity .18s ease-out; will-change: transform; }
+  .shelf a { width: 96px; font-size: 12px; }
+  .shelf img { width: 96px; height: 96px; border-radius: 24px; box-shadow: 0 8px 22px rgba(0,0,0,.55); }
+  .shelf li:not(.on) a { color: transparent; }
+  .shelf li:not(.on) .dot { visibility: hidden; }
+  .shelf a:hover img, .shelf a:focus-visible img { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
@@ -449,6 +464,29 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
       if (t) clearSoon(t);
     });
   });
+  // phone: shelf behaves like a stacked card slider, the centred icon is the biggest
+  var ul = document.querySelector('.shelf ul'), phone = window.matchMedia('(max-width: 699px)'), raf = 0;
+  function shelf() {
+    raf = 0;
+    var lis = ul.querySelectorAll('li');
+    if (!phone.matches) { lis.forEach(function (li) { li.style.transform = li.style.opacity = li.style.zIndex = ''; li.classList.remove('on'); }); return; }
+    var c = ul.scrollLeft + ul.clientWidth / 2;
+    lis.forEach(function (li) {
+      var d = Math.abs(li.offsetLeft + li.offsetWidth / 2 - c) / li.offsetWidth;
+      li.style.transform = 'scale(' + Math.max(0.55, 1.15 - 0.3 * d).toFixed(3) + ')';
+      li.style.opacity = Math.max(0.35, 1 - 0.28 * d).toFixed(2);
+      li.style.zIndex = String(100 - Math.round(d * 10));
+      li.classList.toggle('on', d < 0.5);
+    });
+  }
+  function shelfSoon() { if (!raf) raf = requestAnimationFrame(shelf); }
+  ul.addEventListener('scroll', shelfSoon, { passive: true });
+  window.addEventListener('resize', shelfSoon);
+  ul.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { if (phone.matches) a.parentNode.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); });
+  });
+  if (phone.matches) { var l1 = ul.querySelectorAll('li')[1]; if (l1) ul.scrollLeft = l1.offsetLeft + l1.offsetWidth / 2 - ul.clientWidth / 2; }
+  shelf();
   if (location.hash) { mark(location.hash.slice(1)); var h = document.getElementById(location.hash.slice(1)); if (h) clearSoon(h); }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !viewer.hidden) close(); });
 })();
