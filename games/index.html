@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="build" content="2026-10-23-2">
+<meta name="build" content="2026-10-23-3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Figtree:wght@400;500;600&display=swap">
 <style>
@@ -159,7 +159,8 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
 .gal .track.anim { transition: transform .34s cubic-bezier(.2, .8, .2, 1); }
 .gal .slide { flex: 0 0 100%; height: 100%; box-sizing: border-box; display: grid; place-items: center; padding: 64px 16px 56px; transition: transform .34s ease, opacity .34s ease; }
 .gal .slide img { max-width: 100%; max-height: 100%; border-radius: 16px; background: #000; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
-.viewer:not(.show) .gal .slide img { transform: scale(.9); }
+.gal .slide video { max-width: 100%; max-height: 100%; border-radius: 16px; background: #000; transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.viewer:not(.show) .gal .slide img, .viewer:not(.show) .gal .slide video { transform: scale(.9); }
 .gal .count { position: absolute; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 6px; z-index: 2; }
 .gal .count i { width: 7px; height: 7px; border-radius: 2px; background: rgba(255, 255, 255, .35); transition: background .2s, width .2s; }
 .gal .count i.on { width: 18px; background: #fff; }
@@ -465,6 +466,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   var closing = 0, g = null;
   function close() {
     if (viewer.hidden || closing) return;
+    body.querySelectorAll('video').forEach(function (v) { v.pause(); });
     viewer.classList.remove('show');
     closing = setTimeout(function () { closing = 0; body.innerHTML = ''; viewer.hidden = true; viewer.style.opacity = ''; g = null; }, 260);
   }
@@ -476,14 +478,22 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   // gallery: swipe between the shots of the same game; swiping past the first or last one closes it
   function gallery(el) {
     var scope = el.closest('article') || document;
-    var list = [].slice.call(scope.querySelectorAll('[data-img]'));
+    var list = [].slice.call(scope.querySelectorAll('[data-img],[data-video]'));
     var i = Math.max(0, list.indexOf(el));
     var gal = document.createElement('div'); gal.className = 'gal';
     var track = document.createElement('div'); track.className = 'track';
     list.forEach(function (b) {
       var sl = document.createElement('div'); sl.className = 'slide';
-      var im = document.createElement('img'); im.src = b.dataset.img; im.alt = ''; im.draggable = false;
-      sl.appendChild(im); track.appendChild(sl);
+      if (b.dataset.video) {
+        var vd = document.createElement('video');
+        vd.src = b.dataset.video; vd.controls = true; vd.playsInline = true; vd.preload = 'metadata';
+        var po = b.querySelector('img'); if (po) vd.poster = po.getAttribute('src');
+        sl.appendChild(vd);
+      } else {
+        var im = document.createElement('img'); im.src = b.dataset.img; im.alt = ''; im.draggable = false;
+        sl.appendChild(im);
+      }
+      track.appendChild(sl);
     });
     gal.appendChild(track);
     var count = document.createElement('div'); count.className = 'count';
@@ -531,7 +541,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
       var dx = d.dx, dy = d.dy, axis = d.axis, w = gal.clientWidth, dt = Math.max(1, Date.now() - d.t), moved = d.moved;
       d = null;
       cur().style.transition = '';
-      if (!moved) { if (e.type === 'pointerup' && !e.target.closest('img')) close(); return; }
+      if (!moved) { if (e.type === 'pointerup' && !e.target.closest('img,video')) close(); return; }
       if (axis === 'y') {
         if (Math.abs(dy) > gal.clientHeight * 0.15 || Math.abs(dy) / dt > 0.5) { flyY(dy < 0 ? -1 : 1); return; }
         cur().style.transform = ''; viewer.style.opacity = '';
@@ -559,6 +569,10 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
     g.track.classList.toggle('anim', !!anim);
     setX(0);
     [].forEach.call(g.count.children, function (c, k) { c.classList.toggle('on', k === g.i); });
+    [].forEach.call(g.track.children, function (sl, k) {
+      var v = sl.querySelector('video'); if (!v) return;
+      if (k === g.i) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause();
+    });
   }
   function step(dir) {
     if (!g) return;
@@ -576,13 +590,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
   }
   function open(el) {
     body.innerHTML = ''; g = null;
-    if (el.dataset.video) {
-      var v = document.createElement('video');
-      v.src = el.dataset.video; v.controls = true; v.autoplay = true; v.playsInline = true;
-      body.appendChild(v);
-    } else if (el.dataset.img) {
-      gallery(el);
-    }
+    gallery(el);
     show();
   }
   document.addEventListener('click', function (e) {
