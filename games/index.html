@@ -36,6 +36,7 @@
   --muted: #8a93b0;
   --test: #5fd4a0;
   --dev: #8fa7ff;
+  --live: #ffd27a;
   --warm: #0b1020;
   --warm-line: #c9852f;
   --stage-a: #fff4dc;
@@ -89,6 +90,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .shelf a:hover img, .shelf a:focus-visible img { transform: translateY(-3px) scale(1.04); }
 .shelf .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dev); }
 .shelf .dot.test { background: var(--test); }
+.shelf .dot.live { background: var(--live); }
 @media (min-width: 980px) { .shelf ul { justify-content: center; gap: 22px; } .shelf a { width: 96px; font-size: 13px; } .shelf img { width: 76px; height: 76px; } }
 @media (prefers-reduced-motion: reduce) { .shelf img { transition: none; } }
 .sec-title { margin-bottom: 18px; }
@@ -101,6 +103,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .chip.test { color: var(--test); }
 .chip.dev { color: var(--dev); }
+.chip.live { color: var(--live); }
 
 /* empty state */
 .empty { border: 1px dashed var(--line); border-radius: 18px; padding: 22px; text-align: center; font-size: 15px; }
@@ -253,8 +256,8 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
 
 <div class="shelf" aria-label="Tüm oyunlar · All games">
   <ul class="wrap">
-      <li><a href="#glowtide"><img src="https://cemgoken.cemgoken.workers.dev/games/glowtide_icon.jpg" alt="" width="256" height="256">Glowtide<span class="dot test"></span></a></li>
-      <li><a href="#letters-numbers"><img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_icon.jpg" alt="" width="256" height="256">Letters &amp; Numbers<span class="dot test"></span></a></li>
+      <li><a href="#glowtide"><img src="https://cemgoken.cemgoken.workers.dev/games/glowtide_icon.jpg" alt="" width="256" height="256">Glowtide<span class="dot live"></span></a></li>
+      <li><a href="#letters-numbers"><img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_icon.jpg" alt="" width="256" height="256">Letters &amp; Numbers<span class="dot live"></span></a></li>
       <li><a href="#where-on-earth"><img src="https://cemgoken.cemgoken.workers.dev/games/where-on-earth_icon.jpg" alt="" width="256" height="256">Dünyanın Neresinde?<span class="dot test"></span></a></li>
       <li><a href="#magnevo"><img src="https://cemgoken.cemgoken.workers.dev/games/magnevo_icon.jpg" alt="" width="256" height="256">Magnevo<span class="dot test"></span></a></li>
       <li><a href="#top-of-the-class"><img src="https://cemgoken.cemgoken.workers.dev/games/top-of-the-class_icon.jpg" alt="" width="256" height="256">Sınıfın En İyisi<span class="dot test"></span></a></li>
@@ -264,38 +267,25 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
       <li><a href="#bug-rescue"><img src="https://cemgoken.cemgoken.workers.dev/games/bug-rescue_icon.jpg" alt="" width="256" height="256">Bug Rescue<span class="dot "></span></a></li>
       <li><a href="#shadows-of-the-nile"><img src="https://cemgoken.cemgoken.workers.dev/games/shadows-of-the-nile_icon.jpg" alt="" width="256" height="256">Shadows of the Nile<span class="dot "></span></a></li>
       <li><a href="#booby-trap-inc"><img src="https://cemgoken.cemgoken.workers.dev/games/booby-trap-inc_icon.jpg" alt="" width="256" height="256">Booby Trap Inc.<span class="dot test"></span></a></li>
+      <li><a href="#spaghetti-engineer"><img src="https://cemgoken.cemgoken.workers.dev/games/spaghetti-engineer_icon.jpg" alt="" width="256" height="256">Spaghetti Engineer<span class="dot test"></span></a></li>
   </ul>
 </div>
 
 <main>
   <section class="section" id="magazada">
     <div class="wrap">
-      <div class="sec-title"><h2><span class="tr">Mağazada</span> · <span class="en">In stores</span></h2></div>
-      <div class="empty">
-        <p class="tr">İlk oyunlarımız App Store ve Google Play'e çıkmak üzere. Çıktıkları gün burada olacaklar.</p>
-        <p class="en">Our first games are about to land on the App Store and Google Play. They'll appear here on launch day.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="vitrin">
-    <div class="wrap">
-      <div class="sec-title">
-        <h2><span class="tr">Vitrin</span> · <span class="en">Showcase</span></h2>
-        <p><span class="tr">Mağazalara çıkmak üzere olan oyunlar.</span> <span class="en">Games about to reach the stores.</span></p>
-      </div>
-
+      <div class="sec-title"><h2><span class="tr">Mağazada</span> · <span class="en">In stores</span></h2><p><span class="tr">En az bir mağazada yayında.</span> <span class="en">Live in at least one store.</span></p></div>
       <article class="feature" id="glowtide">
         <div class="head">
           <img src="https://cemgoken.cemgoken.workers.dev/games/glowtide_icon.jpg" alt="" width="256" height="256">
           <div class="names">
             <h3>Glowtide</h3>
             <div class="en-name">Glowtide</div>
-            <div class="meta"><span class="chip test">Test · Testing</span><span>Bulmaca · Puzzle · 4+</span></div>
+            <div class="meta"><span class="chip live">Yayında · Live</span><span>Bulmaca · Puzzle · 4+</span></div>
           </div>
         </div>
         <div class="stores">
-          <span class="badge off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>Yakında · Coming soon</small><b>App Store</b></span></span>
+          <a class="badge" href="https://apps.apple.com/app/id6823693307" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>İndir · Download</small><b>App Store</b></span></a>
           <a class="badge" href="https://play.google.com/apps/testing/com.cemgoken.glowtide" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>Test sürümü · Test build</small><b>Google Play</b></span></a>
         </div>
         <div class="desc">
@@ -314,18 +304,19 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
         </div>
       </article>
 
+
       <article class="feature" id="letters-numbers">
         <div class="head">
           <img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_icon.jpg" alt="" width="256" height="256">
           <div class="names">
             <h3>Letters &amp; Numbers: Kelime Şov</h3>
             <div class="en-name">Letters &amp; Numbers: Word Show</div>
-            <div class="meta"><span class="chip test">Test · Testing</span><span>Kelime · Word · 4+</span></div>
+            <div class="meta"><span class="chip live">Yayında · Live</span><span>Kelime · Word · 4+</span></div>
           </div>
         </div>
         <div class="stores">
           <span class="badge off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>Yakında · Coming soon</small><b>App Store</b></span></span>
-          <a class="badge" href="https://play.google.com/apps/testing/com.cemgoken.lettersnumbers" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>Test sürümü · Test build</small><b>Google Play</b></span></a>
+          <a class="badge" href="https://play.google.com/store/apps/details?id=com.cemgoken.lettersnumbers" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>İndir · Download</small><b>Google Play</b></span></a>
         </div>
         <div class="desc">
           <p class="tr">Kelime ve işlem yarışması. Harflerden en uzun kelimeyi bul, sayılarla hedefe ulaş. Sunucu Profesör Hoot ile her gün yeni bir yarışma, Türkçe ya da İngilizce.</p>
@@ -340,6 +331,35 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 36px; color: var
           <button class="frame" data-img="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot4.jpg"><img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot4.jpg" alt="Letters & Numbers ekran 4" loading="lazy"></button>
           <button class="frame" data-img="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot5.jpg"><img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot5.jpg" alt="Letters & Numbers ekran 5" loading="lazy"></button>
           <button class="frame" data-img="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot6.jpg"><img src="https://cemgoken.cemgoken.workers.dev/games/letters-numbers_shot6.jpg" alt="Letters & Numbers ekran 6" loading="lazy"></button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section" id="vitrin">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2><span class="tr">Vitrin</span> · <span class="en">Showcase</span></h2>
+        <p><span class="tr">Mağazalara çıkmak üzere olan oyunlar.</span> <span class="en">Games about to reach the stores.</span></p>
+      </div>
+
+      <article class="feature" id="spaghetti-engineer">
+        <div class="head">
+          <img src="https://cemgoken.cemgoken.workers.dev/games/spaghetti-engineer_icon.jpg" alt="" width="256" height="256">
+          <div class="names">
+            <h3>Spagetti Mühendisi: Çıt!</h3>
+            <div class="en-name">Spaghetti Engineer: Snap!</div>
+            <div class="meta"><span class="chip test">Test · Testing</span><span>Fizik bulmaca · Physics puzzle · 4+</span></div>
+          </div>
+        </div>
+        <div class="stores">
+          <span class="badge off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.5"/><path d="M10 18.5h4"/></svg><span><small>Yakında · Coming soon</small><b>App Store</b></span></span>
+          <a class="badge" href="https://play.google.com/apps/testing/com.cemgoken.spagettimuhendisi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5v17l14-8.5z"/></svg><span><small>Test sürümü · Test build</small><b>Google Play</b></span></a>
+        </div>
+        <div class="desc">
+          <p class="tr">Kuru spagettiden köprü, kubbe ve baraj kur, sonra yükü kilo kilo artır: ilk çubuk ÇIT diye kırılana kadar. 220 bölüm, üç makarna, kopan çubuğun nedenini gösteren ağır çekim.</p>
+          <p class="en">Build bridges, domes and dams from dry spaghetti, then pile on the load kilo by kilo until the first stick goes SNAP. 220 levels, three pastas, and a slow-motion replay that shows why it broke.</p>
         </div>
       </article>
 
